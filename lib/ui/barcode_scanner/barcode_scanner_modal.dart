@@ -1,17 +1,17 @@
+import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BarcodeScannerModal extends StatelessWidget {
   final Function dismissCallback;
-  final Function(String) saveBarcodeCallback;
 
   final String code;
 
   const BarcodeScannerModal(
       {Key? key,
       required this.code,
-      required this.dismissCallback,
-      required this.saveBarcodeCallback})
+      required this.dismissCallback})
       : super(key: key);
 
   @override
@@ -73,7 +73,7 @@ class BarcodeScannerModal extends StatelessWidget {
   void _saveBarcode(BuildContext context) {
     final scaffoldMessengerState = ScaffoldMessenger.of(context);
 
-    saveBarcodeCallback(code);
+    context.read<BarcodeBloc>().insertBarcode(code);
     dismissCallback();
 
     scaffoldMessengerState.hideCurrentSnackBar();

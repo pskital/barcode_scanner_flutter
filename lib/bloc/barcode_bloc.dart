@@ -47,10 +47,7 @@ class BarcodeBloc extends BlocBase<List<BarcodeModel>> {
             code: code,
             dismissCallback: () {
               _isDialogDisplayed = false;
-            },
-            saveBarcodeCallback: (code) {
-              insertBarcode(code);
-            },
+            }
           );
         });
 
