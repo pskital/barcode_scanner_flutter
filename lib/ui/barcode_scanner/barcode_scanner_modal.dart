@@ -1,20 +1,21 @@
-import 'package:barcode_scanner_flutter/controllers/barcode_scanner_controller.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class BarcodeScannerModal extends GetView<BarcodeScannerController> {
+class BarcodeScannerModal extends StatelessWidget {
   final Function dismissCallback;
+  final Function(String) saveBarcodeCallback;
 
   final String code;
 
   const BarcodeScannerModal(
-      {Key? key, required this.code, required this.dismissCallback})
+      {Key? key,
+      required this.code,
+      required this.dismissCallback,
+      required this.saveBarcodeCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldMessengerState = ScaffoldMessenger.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
@@ -46,7 +47,7 @@ class BarcodeScannerModal extends GetView<BarcodeScannerController> {
                     child: TextButton(
                       child: const Text(barcodeScanModalSaveText),
                       onPressed: () {
-                        _saveBarcode(scaffoldMessengerState);
+                        _saveBarcode(context);
                       },
                     ),
                   ),
@@ -55,7 +56,7 @@ class BarcodeScannerModal extends GetView<BarcodeScannerController> {
                     child: TextButton(
                       child: const Text(barcodeScanModalCancelText),
                       onPressed: () {
-                        Get.back();
+                        Navigator.pop(context);
                         dismissCallback();
                       },
                     ),
@@ -69,15 +70,17 @@ class BarcodeScannerModal extends GetView<BarcodeScannerController> {
     );
   }
 
-  void _saveBarcode(ScaffoldMessengerState scaffoldMessengerState) async {
-    await controller.insertBarcode(code);
+  void _saveBarcode(BuildContext context) {
+    final scaffoldMessengerState = ScaffoldMessenger.of(context);
 
-    Get.back();
+    saveBarcodeCallback(code);
     dismissCallback();
 
     scaffoldMessengerState.hideCurrentSnackBar();
     scaffoldMessengerState.showSnackBar(
       const SnackBar(content: Text(barcodeScanModalConfirmationText)),
     );
+
+    Navigator.pop(context);
   }
 }

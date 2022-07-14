@@ -4,13 +4,13 @@ import 'package:barcode_scanner_flutter/database/barcode_entity.dart';
 class BarcodeRepository {
   final _barcodeDatabase = BarcodeDatabaseProvider().barcodeDatabase;
 
-  Future<void> insertBarcode(String code) async {
-    await _barcodeDatabase.barcodeDao
+  insertBarcode(String code) {
+    _barcodeDatabase.barcodeDao
         .insertBarcode(BarcodeEntity(code, DateTime.now()));
   }
 
-  Future<void> deleteBarcode(BarcodeEntity barcodeEntity) async {
-    await _barcodeDatabase.barcodeDao.deleteBarcode(barcodeEntity);
+  deleteBarcode(BarcodeEntity barcodeEntity) {
+    _barcodeDatabase.barcodeDao.deleteBarcode(barcodeEntity);
   }
 
   Stream<List<BarcodeEntity>> getBarcodes() {

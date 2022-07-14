@@ -1,9 +1,9 @@
-import 'package:barcode_scanner_flutter/controllers/barcode_list_controller.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BarcodeListItem extends GetView<BarcodeListController> {
+class BarcodeListItem extends StatelessWidget {
   final BarcodeModel barcodeModel;
 
   const BarcodeListItem({
@@ -28,7 +28,9 @@ class BarcodeListItem extends GetView<BarcodeListController> {
           Text(barcodeModel.createdAt),
           ElevatedButton(
             onPressed: () async {
-              await controller.deleteBarcode(barcodeModel.barcodeEntity);
+              context
+                  .read<BarcodeBloc>()
+                  .deleteBarcode(barcodeModel.barcodeEntity);
             },
             style: ButtonStyle(
               shape: MaterialStateProperty.all(const CircleBorder()),

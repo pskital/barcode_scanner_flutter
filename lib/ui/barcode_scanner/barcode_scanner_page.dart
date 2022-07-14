@@ -1,10 +1,10 @@
-import 'package:barcode_scanner_flutter/controllers/barcode_scanner_controller.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qr_bar_scanner/qr_bar_scanner_camera.dart';
-import 'package:get/get.dart';
 
-class BarcodeScannerPage extends GetView<BarcodeScannerController> {
+class BarcodeScannerPage extends StatelessWidget {
   const BarcodeScannerPage({Key? key}) : super(key: key);
 
   @override
@@ -16,7 +16,9 @@ class BarcodeScannerPage extends GetView<BarcodeScannerController> {
           children: [
             QRBarScannerCamera(
               qrCodeCallback: (code) {
-                if (code != null) controller.qrCodeCallback(code);
+                if (code != null) {
+                  context.read<BarcodeBloc>().qrCodeCallback(context, code);
+                }
               },
             ),
             Center(
