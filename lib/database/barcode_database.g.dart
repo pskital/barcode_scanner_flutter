@@ -98,7 +98,7 @@ class _$BarcodeDatabase extends BarcodeDatabase {
 
 class _$BarcodeDao extends BarcodeDao {
   _$BarcodeDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database, changeListener),
+      : _queryAdapter = QueryAdapter(database),
         _barcodeEntityInsertionAdapter = InsertionAdapter(
             database,
             'barcode_table',
@@ -106,18 +106,7 @@ class _$BarcodeDao extends BarcodeDao {
                   'id': item.id,
                   'code': item.code,
                   'created_at': _dateTimeConverter.encode(item.createdAt)
-                },
-            changeListener),
-        _barcodeEntityDeletionAdapter = DeletionAdapter(
-            database,
-            'barcode_table',
-            ['id'],
-            (BarcodeEntity item) => <String, Object?>{
-                  'id': item.id,
-                  'code': item.code,
-                  'created_at': _dateTimeConverter.encode(item.createdAt)
-                },
-            changeListener);
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -127,28 +116,25 @@ class _$BarcodeDao extends BarcodeDao {
 
   final InsertionAdapter<BarcodeEntity> _barcodeEntityInsertionAdapter;
 
-  final DeletionAdapter<BarcodeEntity> _barcodeEntityDeletionAdapter;
-
   @override
-  Stream<List<BarcodeEntity>> getBarcodes() {
-    return _queryAdapter.queryListStream('SELECT * FROM barcode_table',
+  Future<List<BarcodeEntity>> getBarcodes() async {
+    return _queryAdapter.queryList('SELECT * FROM barcode_table',
         mapper: (Map<String, Object?> row) => BarcodeEntity(
             row['code'] as String,
             _dateTimeConverter.decode(row['created_at'] as int),
-            row['id'] as int?),
-        queryableName: 'barcode_table',
-        isView: false);
+            row['id'] as int?));
   }
 
   @override
-  Future<void> insertBarcode(BarcodeEntity barcodeEntity) async {
-    await _barcodeEntityInsertionAdapter.insert(
+  Future<void> deleteBarcode(int id) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM barcode_table WHERE id=?1',
+        arguments: [id]);
+  }
+
+  @override
+  Future<int> insertBarcode(BarcodeEntity barcodeEntity) {
+    return _barcodeEntityInsertionAdapter.insertAndReturnId(
         barcodeEntity, OnConflictStrategy.abort);
-  }
-
-  @override
-  Future<void> deleteBarcode(BarcodeEntity barcodeEntity) async {
-    await _barcodeEntityDeletionAdapter.delete(barcodeEntity);
   }
 }
 

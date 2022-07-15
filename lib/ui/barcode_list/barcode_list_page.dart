@@ -12,8 +12,12 @@ class BarcodeListPage extends StatelessWidget {
       appBar: AppBar(title: const Text(barcodeListPageTitle)),
       body: SafeArea(
         child: Column(
-          children: const <Widget>[BarcodeListView(), ScanBarcodeButton()],
+          children: const <Widget>[
+            Expanded(child: BarcodeListView()),
+            ScanBarcodeButton()
+          ],
         ),
+        // child: BarcodeListView(),
       ),
     );
   }

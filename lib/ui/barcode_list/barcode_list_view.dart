@@ -1,4 +1,5 @@
 import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_state.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:barcode_scanner_flutter/ui/barcode_list/barcode_list_item.dart';
 import 'package:flutter/material.dart';
@@ -9,23 +10,49 @@ class BarcodeListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BarcodeBloc, List<BarcodeModel>>(
-      builder: (context, barcodes) {
-        return Expanded(
-            child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          itemCount: barcodes.length,
-          separatorBuilder: (BuildContext context, int index) => const Divider(
-            height: 1,
-            color: Color(0xffd2d2d2),
-          ),
-          itemBuilder: (BuildContext context, int index) {
+    final GlobalKey<AnimatedListState> listKey = GlobalKey();
+    final barcodeBloc = context.read<BarcodeBloc>();
+    return BlocListener<BarcodeBloc, BarcodeState>(
+      listener: (context, state) {
+        if (state is BarcodeDeletedState) {
+          BarcodeModel removedItem = state.barcodeModel;
+          var index = barcodeBloc.barcodeList.indexOf(removedItem);
+
+          if (index < 0) {
+            return;
+          }
+
+          listKey.currentState?.removeItem(index, (context, animation) {
             return BarcodeListItem(
-              barcodeModel: barcodes[index],
-            );
-          },
-        ));
+                barcodeModel: removedItem, animation: animation);
+          });
+          barcodeBloc.barcodeList.remove(removedItem);
+        }
+
+        if (state is BarcodeInsertedState) {
+          BarcodeModel barcodeModel = state.barcodeModel;
+          listKey.currentState?.insertItem(barcodeBloc.barcodeList.length);
+          barcodeBloc.barcodeList.add(barcodeModel);
+        }
+
+        if (state is BarcodeLoadedState) {
+          for (int i = 0; i < barcodeBloc.barcodeList.length; i++) {
+            listKey.currentState?.insertItem(i);
+          }
+        }
       },
+      child: AnimatedList(
+        key: listKey,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        initialItemCount: barcodeBloc.barcodeList.length,
+        itemBuilder:
+            (BuildContext context, int index, Animation<double> animation) {
+          return BarcodeListItem(
+            barcodeModel: barcodeBloc.barcodeList[index],
+            animation: animation,
+          );
+        },
+      ),
     );
   }
 }

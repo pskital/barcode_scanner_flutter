@@ -1,4 +1,5 @@
 import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,7 @@ class BarcodeScannerModal extends StatelessWidget {
   final String code;
 
   const BarcodeScannerModal(
-      {Key? key,
-      required this.code,
-      required this.dismissCallback})
+      {Key? key, required this.code, required this.dismissCallback})
       : super(key: key);
 
   @override
@@ -71,16 +70,7 @@ class BarcodeScannerModal extends StatelessWidget {
   }
 
   void _saveBarcode(BuildContext context) {
-    final scaffoldMessengerState = ScaffoldMessenger.of(context);
-
-    context.read<BarcodeBloc>().insertBarcode(code);
-    dismissCallback();
-
-    scaffoldMessengerState.hideCurrentSnackBar();
-    scaffoldMessengerState.showSnackBar(
-      const SnackBar(content: Text(barcodeScanModalConfirmationText)),
-    );
-
-    Navigator.pop(context);
+    context.read<BarcodeBloc>().add(InsertBarcodeEvent(code));
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }

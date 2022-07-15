@@ -5,7 +5,7 @@ import 'package:floor/floor.dart';
 class BarcodeEntity {
   @PrimaryKey(autoGenerate: true)
   @ColumnInfo(name: 'id')
-  final int? id;
+  int? id;
   @ColumnInfo(name: 'code')
   final String code;
   @ColumnInfo(name: 'created_at')

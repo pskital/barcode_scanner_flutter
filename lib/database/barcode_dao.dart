@@ -5,11 +5,11 @@ import 'package:floor/floor.dart';
 @dao
 abstract class BarcodeDao {
   @Query('SELECT * FROM $barcodeTableName')
-  Stream<List<BarcodeEntity>> getBarcodes();
+  Future<List<BarcodeEntity>> getBarcodes();
 
   @insert
-  Future<void> insertBarcode(BarcodeEntity barcodeEntity);
+  Future<int> insertBarcode(BarcodeEntity barcodeEntity);
 
-  @delete
-  Future<void> deleteBarcode(BarcodeEntity barcodeEntity);
+  @Query('DELETE FROM $barcodeTableName WHERE id=:id')
+  Future<void> deleteBarcode(int id);
 }

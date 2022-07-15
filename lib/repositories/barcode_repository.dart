@@ -1,19 +1,25 @@
-import 'package:barcode_scanner_flutter/database/barcode_database_provider.dart';
+import 'package:barcode_scanner_flutter/database/barcode_database.dart';
 import 'package:barcode_scanner_flutter/database/barcode_entity.dart';
 
 class BarcodeRepository {
-  final _barcodeDatabase = BarcodeDatabaseProvider().barcodeDatabase;
+  final BarcodeDatabase barcodeDatabase;
 
-  insertBarcode(String code) {
-    _barcodeDatabase.barcodeDao
-        .insertBarcode(BarcodeEntity(code, DateTime.now()));
+  BarcodeRepository(this.barcodeDatabase);
+
+  Future<BarcodeEntity> insertBarcode(String code) async {
+    var barcodeEntity = BarcodeEntity(code, DateTime.now());
+    try {
+      var rowId = await barcodeDatabase.barcodeDao.insertBarcode(barcodeEntity);
+      barcodeEntity.id = rowId;
+    } catch (_) {}
+    return barcodeEntity;
   }
 
-  deleteBarcode(BarcodeEntity barcodeEntity) {
-    _barcodeDatabase.barcodeDao.deleteBarcode(barcodeEntity);
+  Future<void> deleteBarcode(BarcodeEntity barcodeEntity) async {
+    await barcodeDatabase.barcodeDao.deleteBarcode(barcodeEntity.id!);
   }
 
-  Stream<List<BarcodeEntity>> getBarcodes() {
-    return _barcodeDatabase.barcodeDao.getBarcodes();
+  Future<List<BarcodeEntity>> getBarcodes() {
+    return barcodeDatabase.barcodeDao.getBarcodes();
   }
 }

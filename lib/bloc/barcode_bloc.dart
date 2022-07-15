@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:barcode_scanner_flutter/database/barcode_entity.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode_state.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:barcode_scanner_flutter/repositories/barcode_repository.dart';
 import 'package:barcode_scanner_flutter/ui/barcode_scanner/barcode_scanner_modal.dart';
@@ -8,35 +9,49 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class BarcodeBloc extends BlocBase<List<BarcodeModel>> {
-  StreamSubscription<List<BarcodeModel>>? _streamSubscription;
+class BarcodeBloc extends Bloc<BarcodeEvent, BarcodeState> {
+  final BarcodeRepository barcodeRepository;
 
-  final _barcodeRepository = BarcodeRepository();
   final _dateFormat = DateFormat('yyyy-MM-dd');
-  var _isDialogDisplayed = false;
 
-  BarcodeBloc() : super([]) {
-    _streamSubscription = _barcodeRepository
-        .getBarcodes()
-        .map((barcodeList) => barcodeList
-            .map((barcodeEntity) => BarcodeModel(
-                barcodeEntity, _dateFormat.format(barcodeEntity.createdAt)))
-            .toList())
-        .listen((event) {
-      emit(event);
-    });
+  bool isBarcodeModalDisplayed = false;
+  List<BarcodeModel> barcodeList = [];
+
+  BarcodeBloc(this.barcodeRepository) : super(BarcodeLoadingState()) {
+    on<InsertBarcodeEvent>(_onInsertBarcode);
+    on<DeleteBarcodeEvent>(_onDeleteBarcode);
+    on<GetBarcodesEvent>(_onGetBarcodes);
+    add(GetBarcodesEvent());
   }
 
-  void deleteBarcode(BarcodeEntity barcodeEntity) {
-    _barcodeRepository.deleteBarcode(barcodeEntity);
+  Future<void> _onGetBarcodes(event, emit) async {
+    var list = await barcodeRepository.getBarcodes();
+    barcodeList = list
+        .map((barcodeEntity) => BarcodeModel(
+            barcodeEntity, _dateFormat.format(barcodeEntity.createdAt)))
+        .toList();
+    emit(BarcodeLoadedState());
   }
 
-  void insertBarcode(String code) {
-    _barcodeRepository.insertBarcode(code);
+  Future<void> _onDeleteBarcode(event, emit) async {
+    emit(BarcodeLoadingState());
+
+    var barcodeModel = event.barcodeModel;
+    await barcodeRepository.deleteBarcode(barcodeModel.barcodeEntity);
+    emit(BarcodeDeletedState(barcodeModel));
+  }
+
+  Future<void> _onInsertBarcode(event, emit) async {
+    emit(BarcodeLoadingState());
+
+    var barcodeEntity = await barcodeRepository.insertBarcode(event.code);
+    var barcodeModel = BarcodeModel(
+        barcodeEntity, _dateFormat.format(barcodeEntity.createdAt));
+    emit(BarcodeInsertedState(barcodeModel));
   }
 
   void qrCodeCallback(BuildContext context, String code) {
-    if (_isDialogDisplayed) {
+    if (isBarcodeModalDisplayed) {
       return;
     }
 
@@ -44,19 +59,12 @@ class BarcodeBloc extends BlocBase<List<BarcodeModel>> {
         context: context,
         builder: (context) {
           return BarcodeScannerModal(
-            code: code,
-            dismissCallback: () {
-              _isDialogDisplayed = false;
-            }
-          );
+              code: code,
+              dismissCallback: () {
+                isBarcodeModalDisplayed = false;
+              });
         });
 
-    _isDialogDisplayed = true;
-  }
-
-  @override
-  Future<void> close() {
-    _streamSubscription?.cancel();
-    return super.close();
+    isBarcodeModalDisplayed = true;
   }
 }

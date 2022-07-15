@@ -9,6 +9,8 @@ class BarcodeScannerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var barcodeBloc = context.read<BarcodeBloc>();
+    barcodeBloc.isBarcodeModalDisplayed = false;
     return Scaffold(
       appBar: AppBar(title: const Text(barcodeScannerPageTitle)),
       body: SafeArea(
@@ -17,7 +19,7 @@ class BarcodeScannerPage extends StatelessWidget {
             QRBarScannerCamera(
               qrCodeCallback: (code) {
                 if (code != null) {
-                  context.read<BarcodeBloc>().qrCodeCallback(context, code);
+                  barcodeBloc.qrCodeCallback(context, code);
                 }
               },
             ),
