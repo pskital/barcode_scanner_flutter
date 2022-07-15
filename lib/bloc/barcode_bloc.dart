@@ -17,14 +17,16 @@ class BarcodeBloc extends Bloc<BarcodeEvent, BarcodeState> {
   bool isBarcodeModalDisplayed = false;
   List<BarcodeModel> barcodeList = [];
 
-  BarcodeBloc(this.barcodeRepository) : super(BarcodeLoadingState()) {
+  BarcodeBloc(this.barcodeRepository) : super(BarcodeInitialState()) {
     on<InsertBarcodeEvent>(_onInsertBarcode);
     on<DeleteBarcodeEvent>(_onDeleteBarcode);
     on<GetBarcodesEvent>(_onGetBarcodes);
-    add(GetBarcodesEvent());
   }
 
   Future<void> _onGetBarcodes(event, emit) async {
+    emit(BarcodeLoadingState());
+
+    await Future.delayed(const Duration(milliseconds: 400));
     var list = await barcodeRepository.getBarcodes();
     barcodeList = list
         .map((barcodeEntity) => BarcodeModel(
@@ -36,6 +38,7 @@ class BarcodeBloc extends Bloc<BarcodeEvent, BarcodeState> {
   Future<void> _onDeleteBarcode(event, emit) async {
     emit(BarcodeLoadingState());
 
+    await Future.delayed(const Duration(milliseconds: 400));
     var barcodeModel = event.barcodeModel;
     await barcodeRepository.deleteBarcode(barcodeModel.barcodeEntity);
     emit(BarcodeDeletedState(barcodeModel));
@@ -44,6 +47,7 @@ class BarcodeBloc extends Bloc<BarcodeEvent, BarcodeState> {
   Future<void> _onInsertBarcode(event, emit) async {
     emit(BarcodeLoadingState());
 
+    await Future.delayed(const Duration(milliseconds: 400));
     var barcodeEntity = await barcodeRepository.insertBarcode(event.code);
     var barcodeModel = BarcodeModel(
         barcodeEntity, _dateFormat.format(barcodeEntity.createdAt));
