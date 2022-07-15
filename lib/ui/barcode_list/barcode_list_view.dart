@@ -1,6 +1,6 @@
-import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_state.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_state.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:barcode_scanner_flutter/ui/barcode_list/barcode_list_item.dart';
 import 'package:flutter/material.dart';
@@ -31,13 +31,15 @@ class BarcodeListView extends StatelessWidget {
                 );
               },
             ),
-            BlocBuilder<BarcodeBloc, BarcodeState>(builder: (context, state) {
-              return Center(
-                  child: Visibility(
-                visible: state is BarcodeLoadingState,
-                child: const CircularProgressIndicator(),
-              ));
-            })
+            Center(
+              child: BlocBuilder<BarcodeBloc, BarcodeState>(builder: (context, state) {
+                return Center(
+                    child: Visibility(
+                  visible: state is BarcodeLoadingState,
+                  child: const CircularProgressIndicator(),
+                ));
+              }),
+            )
           ],
         ),
       ),

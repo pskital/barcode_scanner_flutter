@@ -1,6 +1,6 @@
-import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_state.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_state.dart';
 import 'package:barcode_scanner_flutter/database/barcode_entity.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:barcode_scanner_flutter/repositories/barcode_repository.dart';

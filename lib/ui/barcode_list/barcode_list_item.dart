@@ -1,5 +1,5 @@
-import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

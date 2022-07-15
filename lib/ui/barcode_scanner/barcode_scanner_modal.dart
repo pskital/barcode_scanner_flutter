@@ -1,16 +1,16 @@
-import 'package:barcode_scanner_flutter/bloc/barcode_bloc.dart';
-import 'package:barcode_scanner_flutter/bloc/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
+import 'package:barcode_scanner_flutter/bloc/scanner/barcode_scanner_bloc.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BarcodeScannerModal extends StatelessWidget {
-  final Function dismissCallback;
 
   final String code;
 
   const BarcodeScannerModal(
-      {Key? key, required this.code, required this.dismissCallback})
+      {Key? key, required this.code})
       : super(key: key);
 
   @override
@@ -55,8 +55,8 @@ class BarcodeScannerModal extends StatelessWidget {
                     child: TextButton(
                       child: const Text(barcodeScanModalCancelText),
                       onPressed: () {
+                        context.read<BarcodeScannerBloc>().hideModalDialog();
                         Navigator.pop(context);
-                        dismissCallback();
                       },
                     ),
                   )
