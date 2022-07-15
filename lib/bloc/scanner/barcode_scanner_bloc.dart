@@ -14,7 +14,7 @@ class BarcodeScannerBloc extends BlocBase<BarcodeModalState> {
     emit(ModalDisabledState());
   }
 
-  void hideModalDialog() {
+  void enableModal() {
     emit(ModalEnabledState());
   }
 }

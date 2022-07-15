@@ -55,7 +55,7 @@ class BarcodeScannerModal extends StatelessWidget {
                     child: TextButton(
                       child: const Text(barcodeScanModalCancelText),
                       onPressed: () {
-                        context.read<BarcodeScannerBloc>().hideModalDialog();
+                        context.read<BarcodeScannerBloc>().enableModal();
                         Navigator.pop(context);
                       },
                     ),
