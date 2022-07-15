@@ -8,10 +8,8 @@ class BarcodeRepository {
 
   Future<BarcodeEntity> insertBarcode(String code) async {
     var barcodeEntity = BarcodeEntity(code, DateTime.now());
-    try {
-      var rowId = await barcodeDatabase.barcodeDao.insertBarcode(barcodeEntity);
-      barcodeEntity.id = rowId;
-    } catch (_) {}
+    var rowId = await barcodeDatabase.barcodeDao.insertBarcode(barcodeEntity);
+    barcodeEntity.id = rowId;
     return barcodeEntity;
   }
 
