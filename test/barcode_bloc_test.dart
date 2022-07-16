@@ -1,6 +1,8 @@
 import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
 import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
 import 'package:barcode_scanner_flutter/bloc/barcode/barcode_state.dart';
+import 'package:barcode_scanner_flutter/bloc/scanner/barcode_scanner_bloc.dart';
+import 'package:barcode_scanner_flutter/bloc/scanner/barcode_scanner_modal_state.dart';
 import 'package:barcode_scanner_flutter/database/barcode_entity.dart';
 import 'package:barcode_scanner_flutter/models/barcode_model.dart';
 import 'package:barcode_scanner_flutter/repositories/barcode_repository.dart';
@@ -11,8 +13,6 @@ import 'package:mocktail/mocktail.dart';
 
 class MockBarcodeRepository extends Mock implements BarcodeRepository {}
 
-var dateFormat = DateFormat('yyyy-MM-dd');
-
 void main() {
   late MockBarcodeRepository barcodeRepository;
 
@@ -20,42 +20,73 @@ void main() {
     barcodeRepository = MockBarcodeRepository();
   });
 
-  blocTest<BarcodeBloc, BarcodeState>(
-    'test loading barcodes',
-    setUp: () {
-      when(() => barcodeRepository.getBarcodes())
-          .thenAnswer((_) => Future.value([]));
-    },
-    wait: const Duration(milliseconds: 1000),
-    build: () => BarcodeBloc(barcodeRepository),
-    act: (bloc) => bloc.add(GetBarcodesEvent()),
-    expect: () => <BarcodeState>[BarcodeLoadingState(), BarcodeLoadedState()],
-  );
+  group('barcode bloc tests', () {
+    blocTest<BarcodeBloc, BarcodeState>(
+      'test loading barcodes',
+      setUp: () {
+        when(() => barcodeRepository.getBarcodes())
+            .thenAnswer((_) => Future.value([]));
+      },
+      wait: const Duration(milliseconds: 500),
+      build: () => BarcodeBloc(barcodeRepository),
+      act: (bloc) => bloc.add(GetBarcodesEvent()),
+      expect: () => <BarcodeState>[BarcodeLoadingState(), BarcodeLoadedState()],
+    );
 
-  group('barcode insert', () {
     var expectedId = 1;
     var expectedTime = DateTime.now();
-    var expectedCode = 'test_barcode';
+    var expectedBarcode = 'test_barcode';
+    var expectedBarcodeEntity =
+        BarcodeEntity(expectedBarcode, expectedTime, expectedId);
+    var expectedBarcodeModel = BarcodeModel(
+        expectedBarcodeEntity, DateFormat('yyyy-MM-dd').format(DateTime.now()));
 
-    var expectedModel = BarcodeModel(
-        BarcodeEntity(expectedCode, expectedTime, expectedId),
-        dateFormat.format(DateTime.now()));
-
-    blocTest<BarcodeBloc, BarcodeState>('test barcode insert',
+    blocTest<BarcodeBloc, BarcodeState>('test insert barcode',
         setUp: () {
           when(
-            () => barcodeRepository.insertBarcode(expectedCode),
-          ).thenAnswer((code) => Future.value(
-              BarcodeEntity(expectedCode, expectedTime, expectedId)));
+            () => barcodeRepository.insertBarcode(expectedBarcode),
+          ).thenAnswer((_) => Future.value(
+              BarcodeEntity(expectedBarcode, expectedTime, expectedId)));
         },
-        wait: const Duration(milliseconds: 1000),
+        wait: const Duration(milliseconds: 500),
         build: () => BarcodeBloc(barcodeRepository),
         act: (bloc) {
-          bloc.add(InsertBarcodeEvent(expectedCode));
+          bloc.add(InsertBarcodeEvent(expectedBarcode));
         },
         expect: () => <BarcodeState>[
               BarcodeLoadingState(),
-              BarcodeInsertedState(expectedModel)
+              BarcodeInsertedState(expectedBarcodeModel)
             ]);
+
+    blocTest<BarcodeBloc, BarcodeState>('test delete barcode',
+        setUp: () {
+          when(
+            () => barcodeRepository.deleteBarcode(expectedBarcodeEntity),
+          ).thenAnswer((_) => Future.value());
+        },
+        wait: const Duration(milliseconds: 500),
+        build: () => BarcodeBloc(barcodeRepository),
+        act: (bloc) {
+          bloc.add(DeleteBarcodeEvent(expectedBarcodeModel));
+        },
+        expect: () => <BarcodeState>[
+              BarcodeLoadingState(),
+              BarcodeDeletedState(expectedBarcodeModel)
+            ]);
+  });
+
+  group('scanner bloc tests', () {
+    var expectedBarcode = 'test_barcode';
+
+    blocTest<BarcodeScannerBloc, ScannerModalState>(
+      'test scanner modal disabled state',
+      wait: const Duration(milliseconds: 500),
+      build: () => BarcodeScannerBloc(),
+      act: (bloc) => bloc.qrCodeCallback(expectedBarcode),
+      expect: () => <ScannerModalState>[
+        ScannerModalShowState(expectedBarcode),
+        ScannerModalDisabledState()
+      ],
+    );
   });
 }

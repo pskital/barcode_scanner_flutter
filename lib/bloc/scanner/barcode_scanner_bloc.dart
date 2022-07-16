@@ -1,20 +1,19 @@
 import 'package:barcode_scanner_flutter/bloc/scanner/barcode_scanner_modal_state.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BarcodeScannerBloc extends BlocBase<BarcodeModalState> {
-  BarcodeScannerBloc() : super(ModalEnabledState());
+class BarcodeScannerBloc extends BlocBase<ScannerModalState> {
+  BarcodeScannerBloc() : super(ScannerModalEnabledState());
 
-  void qrCodeCallback(BuildContext context, String code) {
-    if (state is ModalDisabledState) {
+  void qrCodeCallback(String code) {
+    if (state is ScannerModalDisabledState) {
       return;
     }
 
-    emit(ModalShowState(context, code));
-    emit(ModalDisabledState());
+    emit(ScannerModalShowState(code));
+    emit(ScannerModalDisabledState());
   }
 
-  void enableModal() {
-    emit(ModalEnabledState());
+  void enableModalDialog() {
+    emit(ScannerModalEnabledState());
   }
 }

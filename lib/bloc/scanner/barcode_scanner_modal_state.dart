@@ -1,21 +1,19 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
 
-abstract class BarcodeModalState extends Equatable {
+abstract class ScannerModalState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class ModalEnabledState extends BarcodeModalState {}
+class ScannerModalEnabledState extends ScannerModalState {}
 
-class ModalShowState extends BarcodeModalState {
-  final BuildContext context;
+class ScannerModalShowState extends ScannerModalState {
   final String code;
 
-  ModalShowState(this.context, this.code);
+  ScannerModalShowState(this.code);
 
   @override
   List<Object> get props => [code];
 }
 
-class ModalDisabledState extends BarcodeModalState {}
+class ScannerModalDisabledState extends ScannerModalState {}

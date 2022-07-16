@@ -11,21 +11,15 @@ class BarcodeScannerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BarcodeScannerBloc, BarcodeModalState>(
-      listener: _onModalDialogStateChange,
+    return BlocListener<BarcodeScannerBloc, ScannerModalState>(
+      listener: _onScannerModalStateChange,
       child: Scaffold(
         appBar: AppBar(title: const Text(barcodeScannerPageTitle)),
         body: SafeArea(
           child: Stack(
             children: [
               QRBarScannerCamera(
-                qrCodeCallback: (code) {
-                  if (code != null) {
-                    var bloc = context.read<BarcodeScannerBloc>();
-                    bloc.qrCodeCallback(context, code);
-                  }
-                },
-              ),
+                  qrCodeCallback: (code) => _qrCodeCallback(context, code)),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -40,14 +34,20 @@ class BarcodeScannerPage extends StatelessWidget {
     );
   }
 
-  void _onModalDialogStateChange(BuildContext buildContext, BarcodeModalState state) {
-    if (state is ModalShowState) {
+  void _qrCodeCallback(BuildContext context, String? code) {
+    if (code == null) {
+      return;
+    }
+    context.read<BarcodeScannerBloc>().qrCodeCallback(code);
+  }
+
+  void _onScannerModalStateChange(
+      BuildContext context, ScannerModalState state) {
+    if (state is ScannerModalShowState) {
       showDialog(
-          context: buildContext,
+          context: context,
           builder: (context) {
-            return BlocProvider<BarcodeScannerBloc>.value(
-                value: buildContext.read<BarcodeScannerBloc>(),
-                child: BarcodeScannerModal(code: state.code));
+            return BarcodeScannerModal(state.code);
           });
     }
   }
