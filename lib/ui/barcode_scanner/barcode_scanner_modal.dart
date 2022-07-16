@@ -1,6 +1,7 @@
 import 'package:barcode_scanner_flutter/bloc/barcode/barcode_bloc.dart';
 import 'package:barcode_scanner_flutter/bloc/barcode/barcode_event.dart';
 import 'package:barcode_scanner_flutter/bloc/scanner/barcode_scanner_bloc.dart';
+import 'package:barcode_scanner_flutter/utils/keys.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,6 +77,7 @@ class BarcodeModalContentWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: TextButton(
+                  key: Keys.saveBarcodeButtonKey,
                   child: const Text(barcodeScanModalSaveText),
                   onPressed: () {
                     modalDialogInterface.onSaveBarcode(context, code);

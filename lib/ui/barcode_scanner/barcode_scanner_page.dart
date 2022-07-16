@@ -11,6 +11,7 @@ class BarcodeScannerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<BarcodeScannerBloc>().enableModalDialog();
     return BlocListener<BarcodeScannerBloc, ScannerModalState>(
       listener: _onScannerModalStateChange,
       child: Scaffold(

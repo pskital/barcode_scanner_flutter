@@ -36,6 +36,8 @@ PODS:
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.7.0)
+  - integration_test (0.0.1):
+    - Flutter
   - MLImage (1.0.0-beta2)
   - MLKitBarcodeScanning (1.6.0):
     - MLKitCommon (~> 5.0)
@@ -72,6 +74,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_qr_bar_scanner (from `.symlinks/plugins/flutter_qr_bar_scanner/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
@@ -97,6 +100,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_qr_bar_scanner:
     :path: ".symlinks/plugins/flutter_qr_bar_scanner/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
   native_device_orientation:
     :path: ".symlinks/plugins/native_device_orientation/ios"
   sqflite:
@@ -112,6 +117,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitBarcodeScanning: 867463093fe27a31260898e239d5d8305be29b28
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e

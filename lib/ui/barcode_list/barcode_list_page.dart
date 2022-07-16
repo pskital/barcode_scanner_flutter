@@ -1,5 +1,6 @@
 import 'package:barcode_scanner_flutter/ui/barcode_list/barcode_list_view.dart';
 import 'package:barcode_scanner_flutter/utils/app_router.dart';
+import 'package:barcode_scanner_flutter/utils/keys.dart';
 import 'package:barcode_scanner_flutter/utils/strings.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,7 @@ class ScanBarcodeButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton(
+        key: Keys.scanButtonKey,
         onPressed: () {
           Navigator.pushNamed(context, AppRouter.barcodeScannerPage);
         },
