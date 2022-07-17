@@ -20,20 +20,23 @@ class BarcodeListView extends StatelessWidget {
       child: Expanded(
         child: Stack(
           children: [
-            AnimatedList(
-              key: _listKey,
-              controller: _scrollController,
-              physics: const ClampingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              initialItemCount: 0,
-              itemBuilder: (BuildContext context, int index,
-                  Animation<double> animation) {
-                return BarcodeListItem(
-                  deleteBarcodeKey: Key('delete_barcode_$index'),
-                  barcodeModel: barcodeBloc.barcodeList[index],
-                  animation: animation,
-                );
-              },
+            ScrollConfiguration(
+              behavior: const MaterialScrollBehavior().copyWith(
+                  overscroll: false, physics: const ClampingScrollPhysics()),
+              child: AnimatedList(
+                key: _listKey,
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                initialItemCount: 0,
+                itemBuilder: (BuildContext context, int index,
+                    Animation<double> animation) {
+                  return BarcodeListItem(
+                    deleteBarcodeKey: Key('delete_barcode_$index'),
+                    barcodeModel: barcodeBloc.barcodeList[index],
+                    animation: animation,
+                  );
+                },
+              ),
             ),
             Center(
               child: BlocBuilder<BarcodeBloc, BarcodeState>(
