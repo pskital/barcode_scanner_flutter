@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Keys {
-  static const scanButtonKey = Key('scan_button_key');
-  static const saveBarcodeButtonKey = Key('save_barcode_button_key');
+  static const scanBarcodeKey = Key('scan_barcode_key');
+  static const saveBarcodeKey = Key('save_barcode_key');
+  static const listBarcodeKey = Key('list_barcode_key');
   static GlobalKey<NavigatorState> navKey = GlobalKey();
 }

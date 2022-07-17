@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BarcodeListView extends StatelessWidget {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
 
   BarcodeListView({Key? key}) : super(key: key);
 
@@ -21,18 +22,22 @@ class BarcodeListView extends StatelessWidget {
           children: [
             AnimatedList(
               key: _listKey,
+              controller: _scrollController,
+              physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               initialItemCount: 0,
               itemBuilder: (BuildContext context, int index,
                   Animation<double> animation) {
                 return BarcodeListItem(
+                  deleteBarcodeKey: Key('delete_barcode_$index'),
                   barcodeModel: barcodeBloc.barcodeList[index],
                   animation: animation,
                 );
               },
             ),
             Center(
-              child: BlocBuilder<BarcodeBloc, BarcodeState>(builder: (context, state) {
+              child: BlocBuilder<BarcodeBloc, BarcodeState>(
+                  builder: (context, state) {
                 return Center(
                     child: Visibility(
                   visible: state is BarcodeLoadingState,
@@ -62,8 +67,17 @@ class BarcodeListView extends StatelessWidget {
 
   void _onBarcodeInserted(BarcodeBloc barcodeBloc, BarcodeState state) {
     BarcodeModel barcodeModel = (state as BarcodeInsertedState).barcodeModel;
-    _listKey.currentState?.insertItem(barcodeBloc.barcodeList.length);
+    var length = barcodeBloc.barcodeList.length;
+
+    _listKey.currentState?.insertItem(length);
     barcodeBloc.barcodeList.add(barcodeModel);
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 90,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear);
+    });
   }
 
   void _onBarcodeDeleted(BarcodeBloc barcodeBloc, BarcodeState state) {
@@ -75,7 +89,11 @@ class BarcodeListView extends StatelessWidget {
     }
 
     _listKey.currentState?.removeItem(index, (context, animation) {
-      return BarcodeListItem(barcodeModel: removedItem, animation: animation);
+      return BarcodeListItem(
+        deleteBarcodeKey: Key('delete_barcode_$index'),
+        barcodeModel: removedItem,
+        animation: animation,
+      );
     });
     barcodeBloc.barcodeList.remove(removedItem);
   }

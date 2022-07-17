@@ -31,7 +31,7 @@ class ScanBarcodeButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton(
-        key: Keys.scanButtonKey,
+        key: Keys.scanBarcodeKey,
         onPressed: () {
           Navigator.pushNamed(context, AppRouter.barcodeScannerPage);
         },

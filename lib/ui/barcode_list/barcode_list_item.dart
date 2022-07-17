@@ -7,9 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BarcodeListItem extends StatelessWidget {
   final BarcodeModel barcodeModel;
   final Animation<double> animation;
+  final Key deleteBarcodeKey;
 
   const BarcodeListItem({
     Key? key,
+    required this.deleteBarcodeKey,
     required this.barcodeModel,
     required this.animation,
   }) : super(key: key);
@@ -34,6 +36,7 @@ class BarcodeListItem extends StatelessWidget {
                 ),
                 Text(barcodeModel.createdAt),
                 ElevatedButton(
+                  key: deleteBarcodeKey,
                   onPressed: () {
                     context
                         .read<BarcodeBloc>()

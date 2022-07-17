@@ -77,7 +77,7 @@ class BarcodeModalContentWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: TextButton(
-                  key: Keys.saveBarcodeButtonKey,
+                  key: Keys.saveBarcodeKey,
                   child: const Text(barcodeScanModalSaveText),
                   onPressed: () {
                     modalDialogInterface.onSaveBarcode(context, code);
