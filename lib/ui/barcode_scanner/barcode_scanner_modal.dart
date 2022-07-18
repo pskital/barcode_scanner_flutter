@@ -77,21 +77,17 @@ class BarcodeModalContentWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: TextButton(
-                  key: Keys.saveBarcodeKey,
-                  child: const Text(barcodeScanModalSaveText),
-                  onPressed: () {
-                    modalDialogInterface.onSaveBarcode(context, code);
-                  },
-                ),
+                    key: Keys.saveBarcodeKey,
+                    child: const Text(barcodeScanModalSaveText),
+                    onPressed: () =>
+                        modalDialogInterface.onSaveBarcode(context, code)),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: TextButton(
-                  child: const Text(barcodeScanModalCancelText),
-                  onPressed: () {
-                    modalDialogInterface.onCancelModalDialog(context);
-                  },
-                ),
+                    child: const Text(barcodeScanModalCancelText),
+                    onPressed: () =>
+                        modalDialogInterface.onCancelModalDialog(context)),
               )
             ],
           )

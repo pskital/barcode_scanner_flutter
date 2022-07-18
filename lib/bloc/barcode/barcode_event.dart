@@ -8,10 +8,10 @@ class InsertBarcodeEvent extends BarcodeEvent {
   InsertBarcodeEvent(this.code);
 }
 
-class DeleteBarcodeEvent extends BarcodeEvent {
+class DeleteBarcodeEvent implements BarcodeEvent {
   BarcodeModel barcodeModel;
 
   DeleteBarcodeEvent(this.barcodeModel);
 }
 
-class GetBarcodesEvent extends BarcodeEvent {}
+class GetBarcodesEvent implements BarcodeEvent {}
